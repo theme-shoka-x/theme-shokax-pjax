@@ -1,8 +1,9 @@
 {
   "name": "theme-shokax-pjax",
   "version": "0.0.1",
-  "description": "pjax for shokax",
+  "description": "pjax for hexo-theme-shokax",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "standalone": "rollup -c standalone.config.js",
     "build": "rollup -c build.config.js"
