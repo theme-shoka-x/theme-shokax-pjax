@@ -2,7 +2,7 @@ import { terser } from 'rollup-plugin-terser'
 export default {
   input: 'index.js',
   output: {
-    file: 'theme-shokax-pjax.min.js',
+    file: 'pjax.shokax.min.js',
     format: 'umd',
     name: 'Pjax'
   },

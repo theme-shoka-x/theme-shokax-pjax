@@ -201,11 +201,8 @@
   }
 
   const attrState = "data-pjax-state";
-  const isDefaultPrevented = function(event) {
-    return event.defaultPrevented || event.returnValue === false;
-  };
   const linkAction = function (el, event) {
-    if (isDefaultPrevented(event)) {
+    if (event.defaultPrevented || event.returnValue === false) {
       return;
     }
     const options = {...this.options};
@@ -287,7 +284,7 @@
     const requestParams = requestOptions.requestParams || null;
     let requestPayload = null;
     const request = new XMLHttpRequest();
-    const timeout = options.timeout || 0;
+    const timeout = options.timeout;
     request.onreadystatechange = function() {
       if (request.readyState === 4) {
         if (request.status === 200) {
@@ -298,7 +295,7 @@
       }
     };
     request.onerror = function(e) {
-      console.log(e);
+      console.error(e);
       callback(null, request, location, options);
     };
     request.ontimeout = function() {

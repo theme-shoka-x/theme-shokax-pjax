@@ -1,6 +1,6 @@
 {
   "name": "theme-shokax-pjax",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "pjax for hexo-theme-shokax",
   "main": "index.js",
   "types": "index.d.ts",

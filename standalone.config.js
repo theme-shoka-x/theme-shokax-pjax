@@ -2,7 +2,7 @@ import cleanup from 'rollup-plugin-cleanup'
 export default {
   input: 'index.js',
   output: {
-    file: 'theme-shokax-pjax.js',
+    file: 'pjax.shokax.js',
     format: 'umd',
     name: 'Pjax'
   },
