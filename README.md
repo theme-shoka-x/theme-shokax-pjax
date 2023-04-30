@@ -1,3 +1,3 @@
 # theme-shokax-pjax
-pjax for shokax
-WIP
+pjax for shokax  
+still WIP

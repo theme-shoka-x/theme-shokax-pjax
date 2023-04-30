@@ -3,7 +3,7 @@ import forEachEls from "./lib/foreach-els";
 import parseOptions from "./lib/parse-options";
 import foreachSelectors from "./lib/foreach-selectors";
 import switchesSelectors from "./lib/switches-selectors";
-import { innerHTML, outerHTML, switchElementsAlt, replaceNode, sideBySide } from "./lib/switches";
+import { innerHTML, outerHTML, switchElementsAlt } from "./lib/switches";
 import newUid from "./lib/uniqueid";
 
 import { on } from "./lib/events/events";
@@ -13,7 +13,6 @@ import clone from "./lib/util/clone";
 import contains from "./lib/util/contains";
 
 import attachLink from './lib/proto/attach-link';
-import abortRequest from "./lib/abort-request";
 import sendRequest from "./lib/send-request";
 import handleResponse from "./lib/proto/handle-response";
 import parseElement from "./lib/proto/parse-element";
@@ -176,8 +175,8 @@ class Pjax {
 
   afterAllSwitches() {
     // execute scripts when DOM have been completely updated
-    this.options.selectors.forEach( selector=> {
-      forEachEls(document.querySelectorAll(selector), el=> {
+    this.options.selectors.forEach(selector => {
+      forEachEls(document.querySelectorAll(selector), el => {
         executeScripts(el);
       });
     });
@@ -230,7 +229,7 @@ class Pjax {
 
         let curTop = 0;
         let target =
-            document.getElementById(name) || document.getElementsByName(name)[0];
+          document.getElementById(name) || document.getElementsByName(name)[0];
         if (target) {
           // http://stackoverflow.com/questions/8111094/cross-browser-javascript-function-to-find-actual-position-of-an-element-in-page
           if (target.offsetParent) {
@@ -259,15 +258,21 @@ class Pjax {
       options: null
     };
   }
+
+  abortRequest(request) {
+    if (request && request.readyState < 4) {
+      request.onreadystatechange = function () { };
+      request.abort();
+    }
+  }
 }
 
 Pjax.prototype.attachLink = attachLink;
 // form does not exist in shokax
 // Pjax.prototype.attachForm = attachForm;
-Pjax.prototype.abortRequest = abortRequest;
 Pjax.prototype.doRequest = sendRequest;
 Pjax.prototype.handleResponse = handleResponse;
-Pjax.switches = { innerHTML, outerHTML, switchElementsAlt, replaceNode, sideBySide };
+Pjax.switches = { innerHTML, outerHTML, switchElementsAlt };
 
 // All browsers that support shokax theme by default support pjax.
 export default Pjax;
