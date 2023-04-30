@@ -9,7 +9,6 @@ import newUid from "./lib/uniqueid";
 import { on } from "./lib/events/events";
 import { trigger } from "./lib/events/events";
 
-import clone from "./lib/util/clone";
 import contains from "./lib/util/contains";
 
 import attachLink from './lib/proto/attach-link';
@@ -40,7 +39,7 @@ class Pjax {
       "popstate",
       function (st) {
         if (st.state) {
-          const opt = clone(this.options);
+          const opt = {...this.options};
           opt.url = st.state.url;
           opt.title = st.state.title;
           // Since state already exists, prevent it from being pushed again
@@ -158,7 +157,7 @@ class Pjax {
     options =
       typeof options === "object"
         ? Object.assign({}, this.options, options)
-        : clone(this.options);
+        : {...this.options};
 
     // Abort any previous request
     this.abortRequest(this.request);

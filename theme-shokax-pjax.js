@@ -22,10 +22,6 @@
         el.parentNode || document.querySelector("head") || document.documentElement;
     const script = document.createElement("script");
     if (code.match("document.write")) {
-      console.log(
-        "Script contains document.write. Can’t be executed correctly. Code skipped ",
-        el
-      );
       return false;
     }
     script.type = "text/javascript";
@@ -35,11 +31,7 @@
       script.async = false;
     }
     if (code !== "") {
-      try {
-        script.appendChild(document.createTextNode(code));
-      } catch (e) {
-        script.text = code;
-      }
+      script.appendChild(document.createTextNode(code));
     }
     parent.appendChild(script);
     if (
@@ -62,30 +54,6 @@
         }
         evalScript(script);
       }
-    });
-  }
-
-  function eventForEach(events, fn) {
-    events = typeof events === "string" ? events.split(" ") : events;
-    events.forEach(fn);
-  }
-  function on(els, events, listener, useCapture) {
-    eventForEach(events, e => {
-      forEachEls(els, el => {
-        el.addEventListener(e, listener, useCapture);
-      });
-    });
-  }
-  function trigger(els, events, opts = {}) {
-    eventForEach(events, e => {
-      const event = new CustomEvent(e, {
-        bubbles: true,
-        cancelable: true,
-        ...opts
-      });
-      forEachEls(els, el => {
-        el.dispatchEvent(event);
-      });
     });
   }
 
@@ -112,94 +80,6 @@
     }
     this.onSwitch();
   }
-  function replaceNode(oldEl, newEl) {
-    oldEl.parentNode.replaceChild(newEl, oldEl);
-    this.onSwitch();
-  }
-  function sideBySide(oldEl, newEl, options, switchOptions) {
-    let forEach = Array.prototype.forEach;
-    let elsToRemove = [];
-    let elsToAdd = [];
-    let fragToAppend = document.createDocumentFragment();
-    let animationEventNames = "animationend webkitAnimationEnd MSAnimationEnd oanimationend";
-    let animatedElsNumber = 0;
-    let sexyAnimationEnd = function (e) {
-      if (e.target !== e.currentTarget) {
-        return;
-      }
-      animatedElsNumber--;
-      if (animatedElsNumber <= 0 && elsToRemove) {
-        elsToRemove.forEach(function (el) {
-          if (el.parentNode) {
-            el.parentNode.removeChild(el);
-          }
-        });
-        elsToAdd.forEach(function (el) {
-          el.className = el.className.replace(
-            el.getAttribute("data-pjax-classes"),
-            ""
-          );
-          el.removeAttribute("data-pjax-classes");
-        });
-        elsToAdd = null;
-        elsToRemove = null;
-        this.onSwitch();
-      }
-    }.bind(this);
-    switchOptions = switchOptions || {};
-    forEach.call(oldEl.childNodes, function (el) {
-      elsToRemove.push(el);
-      if (el.classList && !el.classList.contains("js-Pjax-remove")) {
-        if (el.hasAttribute("data-pjax-classes")) {
-          el.className = el.className.replace(
-            el.getAttribute("data-pjax-classes"),
-            ""
-          );
-          el.removeAttribute("data-pjax-classes");
-        }
-        el.classList.add("js-Pjax-remove");
-        if (switchOptions.callbacks && switchOptions.callbacks.removeElement) {
-          switchOptions.callbacks.removeElement(el);
-        }
-        if (switchOptions.classNames) {
-          el.className +=
-            " " +
-            switchOptions.classNames.remove +
-            " " +
-            (options.backward
-              ? switchOptions.classNames.backward
-              : switchOptions.classNames.forward);
-        }
-        animatedElsNumber++;
-        on(el, animationEventNames, sexyAnimationEnd, true);
-      }
-    });
-    forEach.call(newEl.childNodes, function (el) {
-      if (el.classList) {
-        let addClasses = "";
-        if (switchOptions.classNames) {
-          addClasses =
-            " js-Pjax-add " +
-            switchOptions.classNames.add +
-            " " +
-            (options.backward
-              ? switchOptions.classNames.forward
-              : switchOptions.classNames.backward);
-        }
-        if (switchOptions.callbacks && switchOptions.callbacks.addElement) {
-          switchOptions.callbacks.addElement(el);
-        }
-        el.className += addClasses;
-        el.setAttribute("data-pjax-classes", addClasses);
-        elsToAdd.push(el);
-        fragToAppend.appendChild(el);
-        animatedElsNumber++;
-        on(el, animationEventNames, sexyAnimationEnd, true);
-      }
-    });
-    oldEl.className = newEl.className;
-    oldEl.appendChild(fragToAppend);
-  }
 
   function parseOptions (options = {}) {
     options.elements = options.elements || "a[href], form[action]";
@@ -216,7 +96,6 @@
         : true;
     options.cacheBust =
       typeof options.cacheBust === "undefined" ? true : options.cacheBust;
-    options.debug = options.debug || false;
     options.timeout = options.timeout || 0;
     options.currentUrlFullReload =
       typeof options.currentUrlFullReload === "undefined"
@@ -285,17 +164,28 @@
     };
   })();
 
-  function clone(obj) {
-    if (null === obj || "object" !== typeof obj) {
-      return obj;
-    }
-    const copy = obj.constructor();
-    for (const attr in obj) {
-      if (obj.hasOwnProperty(attr)) {
-        copy[attr] = obj[attr];
-      }
-    }
-    return copy;
+  function eventForEach(events, fn) {
+    events = typeof events === "string" ? events.split(" ") : events;
+    events.forEach(fn);
+  }
+  function on(els, events, listener, useCapture) {
+    eventForEach(events, e => {
+      forEachEls(els, el => {
+        el.addEventListener(e, listener, useCapture);
+      });
+    });
+  }
+  function trigger(els, events, opts = {}) {
+    eventForEach(events, e => {
+      const event = new CustomEvent(e, {
+        bubbles: true,
+        cancelable: true,
+        ...opts
+      });
+      forEachEls(els, el => {
+        el.dispatchEvent(event);
+      });
+    });
   }
 
   function contains(doc, selectors, el) {
@@ -318,7 +208,7 @@
     if (isDefaultPrevented(event)) {
       return;
     }
-    const options = clone(this.options);
+    const options = {...this.options};
     const attrValue = checkIfShouldAbort(el, event);
     if (attrValue) {
       el.setAttribute(attrState, attrValue);
@@ -379,13 +269,6 @@
         }
       }.bind(this)
     );
-  }
-
-  function abortRequest (request) {
-    if (request && request.readyState < 4) {
-      request.onreadystatechange = function () { };
-      request.abort();
-    }
   }
 
   function updateQueryString(uri, key, value) {
@@ -453,7 +336,7 @@
   }
 
   function handleResponse (responseText, request, href, options) {
-    options = clone(options || this.options);
+    options = {...(options||this.options)};
     options.request = request;
     if (responseText === false) {
       trigger(document, "pjax:complete pjax:error", options);
@@ -497,12 +380,8 @@
       this.loadContent(responseText, options);
     } catch (e) {
       trigger(document, "pjax:error", options);
-      if (!this.options.debug) {
-        console.error("Pjax switch fail: ", e);
-        return this.latestChance(href);
-      } else {
-        throw e;
-      }
+      console.error("Pjax switch fail: ", e);
+      return this.latestChance(href);
     }
   }
 
@@ -536,7 +415,7 @@
         "popstate",
         function (st) {
           if (st.state) {
-            const opt = clone(this.options);
+            const opt = {...this.options};
             opt.url = st.state.url;
             opt.title = st.state.title;
             opt.history = false;
@@ -630,7 +509,7 @@
       options =
         typeof options === "object"
           ? Object.assign({}, this.options, options)
-          : clone(this.options);
+          : {...this.options};
       this.abortRequest(this.request);
       trigger(document, "pjax:send", options);
       this.request = this.doRequest(
@@ -640,8 +519,8 @@
       );
     }
     afterAllSwitches() {
-      this.options.selectors.forEach( selector=> {
-        forEachEls(document.querySelectorAll(selector), el=> {
+      this.options.selectors.forEach(selector => {
+        forEachEls(document.querySelectorAll(selector), el => {
           executeScripts(el);
         });
       });
@@ -683,7 +562,7 @@
           name = decodeURIComponent(name);
           let curTop = 0;
           let target =
-              document.getElementById(name) || document.getElementsByName(name)[0];
+            document.getElementById(name) || document.getElementsByName(name)[0];
           if (target) {
             if (target.offsetParent) {
               do {
@@ -709,12 +588,17 @@
         options: null
       };
     }
+    abortRequest(request) {
+      if (request && request.readyState < 4) {
+        request.onreadystatechange = function () { };
+        request.abort();
+      }
+    }
   }
   Pjax.prototype.attachLink = attachLink;
-  Pjax.prototype.abortRequest = abortRequest;
   Pjax.prototype.doRequest = sendRequest;
   Pjax.prototype.handleResponse = handleResponse;
-  Pjax.switches = { innerHTML, outerHTML, switchElementsAlt, replaceNode, sideBySide };
+  Pjax.switches = { innerHTML, outerHTML, switchElementsAlt };
 
   return Pjax;
 
