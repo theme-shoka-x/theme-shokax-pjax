@@ -1,6 +1,6 @@
 {
   "name": "theme-shokax-pjax",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "pjax for hexo-theme-shokax",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",

@@ -1,5 +1,5 @@
 import type Pjax from ".";
-import { outerHTML } from "../lib/switches";
+import { outerHTML } from "./switches";
 import forEachEls from "./forEachEls";
 import { PjaxOptions, SwitchFunction } from "./types";
 

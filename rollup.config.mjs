@@ -22,7 +22,7 @@ export default [
         dir: 'dist',
         format: 'umd',
         entryFileNames: '[name].umd.js',
-        name: 'anime',
+        name: 'Pjax',
         sourcemap: false,
         plugins: [terser()],
       },

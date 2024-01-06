@@ -9,5 +9,5 @@ simplified from [pjax](https://github.com/MoOx/pjax)
 ## Usage
 ### Import
 ```html
-<script src="https://www.unpkg.com/theme-shokax-pjax@latest/theme-shokax-pjax.min.js"></script>
+<script src="https://www.unpkg.com/theme-shokax-pjax@latest/pjax.shokax.min.js"></script>
 ```
