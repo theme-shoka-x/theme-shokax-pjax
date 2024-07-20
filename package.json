@@ -9,7 +9,7 @@
   "scripts": {
     "build": "rollup -c rollup.config.mjs",
     "test": "mocha -r ts-node/register 'test/**/*.ts'",
-    "test-cov": "c8 --reporter=locv --reporter=text-summary npm test"
+    "test-cov": "c8 --reporter=lcov --reporter=text-summary npm test"
   },
   "repository": {
     "type": "git",
