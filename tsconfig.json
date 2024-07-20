@@ -6,7 +6,8 @@
     "sourceMap": true,
     "declaration": true,
     "esModuleInterop": true,
-    "lib": ["dom", "ESNext"]
+    "lib": ["dom", "ESNext"],
+    "types": ["mocha"]
   },
   "include": ["./src/**/*"],
   "exclude": ["node_modules"]

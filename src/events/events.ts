@@ -28,6 +28,25 @@ export function on(
   });
 }
 
+export function off(
+  els:
+    | Window
+    | Document
+    | HTMLElement
+    | NodeList
+    | Array<HTMLElement>
+    | HTMLCollection,
+  events: string | string[],
+  listener: EventListener,
+  useCapture?: boolean
+): void {
+  eventForEach(events, (e) => {
+    forEachEls(els, (el) => {
+      el.removeEventListener(e, listener, useCapture);
+    });
+  });
+}
+
 // do not support IE !!!
 export function trigger(
   els:
@@ -41,10 +60,12 @@ export function trigger(
   opts: Partial<PjaxOptions> = {}
 ): void {
   eventForEach(events, (e) => {
-    const event = new CustomEvent(e, {
+    const event = new Event(e, {
       bubbles: true,
       cancelable: true,
-      ...opts,
+    });
+    Object.keys(opts).forEach((key) => {
+      event[key] = opts[key];
     });
     forEachEls(els, (el) => {
       el.dispatchEvent(event);
