@@ -9,7 +9,7 @@ export default function (
     request: XMLHttpRequest,
     location: string,
     options: Partial<PjaxOptions>
-  ) => XMLHttpRequest
+  ) => any
 ): XMLHttpRequest {
   const requestOptions = options.requestOptions || {};
   const requestMethod = (requestOptions.requestMethod || "GET").toUpperCase();

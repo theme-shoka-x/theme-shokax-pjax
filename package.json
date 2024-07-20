@@ -7,7 +7,9 @@
   "browser": "dist/index.umd.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rollup -c rollup.config.mjs"
+    "build": "rollup -c rollup.config.mjs",
+    "test": "mocha -r ts-node/register 'test/**/*.ts'",
+    "test-cov": "c8 --reporter=lcov --reporter=text-summary npm test"
   },
   "repository": {
     "type": "git",
@@ -19,7 +21,16 @@
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.5",
+    "@types/chai": "^4.3.16",
+    "@types/jsdom": "^21.1.7",
+    "@types/mocha": "^10.0.7",
+    "c8": "^10.1.2",
+    "chai": "4",
+    "jsdom": "^24.1.0",
+    "mocha": "^10.6.0",
     "rollup": "^4.9.4",
+    "ts-node": "^10.9.2",
+    "tslib": "^2.6.3",
     "typescript": "^5.3.3"
   },
   "keywords": [
