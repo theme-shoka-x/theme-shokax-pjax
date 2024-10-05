@@ -1,5 +1,4 @@
 import typescript from '@rollup/plugin-typescript';
-import commonjs from '@rollup/plugin-commonjs';
 import terser from '@rollup/plugin-terser';
 
 export default [
@@ -27,7 +26,7 @@ export default [
         plugins: [terser()],
       },
     ],
-    plugins: [commonjs(), typescript({ module: "ESNext" })],
+    plugins: [typescript({ module: "ESNext" })],
   }
 ]
 
